@@ -1,18 +1,11 @@
 {
-  "name": "bff",
+  "name": "nodesocket",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Matheus",
-  "license": "MIT",
-  "dependencies": {
-    "axios": "^0.18.0",
-    "cors": "^2.8.5",
-    "express": "^4.16.4",
-    "nodemon": "^1.18.9",
-    "socket.io": "^2.2.0"
-  }
+  "author": "matheus",
+  "license": "MIT"
 }
