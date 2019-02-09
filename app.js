@@ -21,9 +21,9 @@ io.on("connection", socket => {
 const getApiAndEmit = async socket => {
   try {
     const res = await axios.get(
-      "https://jsonplaceholder.typicode.com/comments"
+      "http://demo2585989.mockable.io/deputados"
     );
-    socket.emit("FromAPI", res.data)
+    socket.emit("deputados", res.data)
     console.log('>>>>', res.data);
   } catch (error) {
     console.error(`Error: ${error.code}`);
