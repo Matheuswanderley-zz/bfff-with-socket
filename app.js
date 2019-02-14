@@ -2,22 +2,34 @@
 const port = process.env.PORT || 4001;
 
 const express = require("express");
+
 const http = require("http");
+
 const socketIo = require("socket.io");
+
 const responseTime = require('response-time')
 
 const routes = require("./routes/index");
+
+const db = require('./db/index').db;
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
 const service = require('./service')
+ 
+
+db.any('SELECT * FROM dadosabertos.log_favorabilidade')
+.then(res => console.log(res))
+
+
 
 const setHeaders = res => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
 }
+
 
 const httpGetDeputados = res => {
   setHeaders(res)
