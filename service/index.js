@@ -17,6 +17,7 @@ const diff = (cached, apiResult) => {
 
   for (i in cached) {
     mapCached.set(cached[i].id, cached[i])
+    
   }
 
   for (i in apiResult) {
@@ -30,14 +31,16 @@ const diff = (cached, apiResult) => {
   for (i in apiResult) {  
     const cachedObj = mapCached.get(apiResult[i].id)
     const apiObj = mapApi.get(apiResult[i].id)
-    apiObj.oldFavorabildade = null
+    apiObj.oldFavorabilidade = null
     apiObj.changed = false
-    if (cachedObj == null || cachedObj.favorabilidade !== apiObj.favorabilidade) {
-      apiObj.oldFavorabildade = cachedObj.favorabilidade
+   // if ( !cachedObj || cachedObj.favorabilidade !== apiObj.favorabilidade) {  
+    //console.log('>>>> MUDOU!! ', cachedObj.favorabilidade, apiObj.favorabilidade)} 
+    if ( !cachedObj || cachedObj.favorabilidade !== apiObj.favorabilidade) {      
+     apiObj.oldFavorabilidade = cachedObj ? cachedObj.favorabilidade : ''
       apiObj.changed = true
       diffLog.push({
         deputado_id: apiObj.id,
-        old_favorabilidade: apiObj.oldFavorabildade,
+        old_favorabilidade: apiObj.oldFavorabilidade,
         favorabilidade: apiObj.favorabilidade
       })
 
@@ -45,12 +48,12 @@ const diff = (cached, apiResult) => {
     payload.push(apiObj)
   }
   if (diffLog.length === 0) {
-    return 
+    return {}
   }
   registerLog(diffLog)
   .catch(err => console.log(err))
   
-  _setResultToCache(apiResult)
+  _setResultToCache(payload)
 
   const countBy = (data, dimension) => {
     const totalGrouped = lodash.countBy(data, dimension)
@@ -90,7 +93,7 @@ const diff = (cached, apiResult) => {
   }
 
   console.log('[SERVICE] DIFF count =', diffLog.length)
-  return response
+  return  response
 }
 
 const _getDeputadosRedis = () => new Promise((resolve, reject) => {
@@ -103,14 +106,10 @@ const _getDeputadosRedis = () => new Promise((resolve, reject) => {
       })
 })
 
-const _getDiferencaDeputados = 
-  result => 
-    _getDeputadosRedis()
-    .then(redisResult => diff(redisResult, result))
-
-const getDeputados = () =>
-  httpClient.getDeputados()
-    .then(_getDiferencaDeputados)
+const getDeputados = () =>   httpClient.getDeputados()
+      .then(result =>       
+        _getDeputadosRedis()        
+        .then(redisResult => diff(redisResult, result)))
 
 module.exports = {
     getDeputados

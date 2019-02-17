@@ -20,11 +20,6 @@ const io = socketIo(server);
 const service = require('./service')
  
 
-db.any('SELECT * FROM dadosabertos.log_favorabilidade')
-.then(res => console.log(res))
-
-
-
 const setHeaders = res => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -61,7 +56,8 @@ const wsGetDeputados = socket => {
 
   service.getDeputados()
     .then(result => {
-      console.log('[WS] /deputados response OK', result.length)
+      console.log('result', result)
+      
       socket.emit("deputados", JSON.stringify(result))
     })
     .catch(err => {
