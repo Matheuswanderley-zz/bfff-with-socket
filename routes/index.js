@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const httpClient = require('../http-client');
-const setHeaders = () => {
+const setHeaders = (res) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
 }
@@ -13,15 +13,15 @@ router.get("/", (req, res) => {
 });
 
 
-router.get(':id/posts', (req, res) =>{
-  setHeaders()
-  const id = req.param.id
-  httpClient.getPost(id)
+router.get("/posts/:id", (req, res) =>{
+  const id = req.params.id
+  httpClient.getPosts(id)
   .then(result =>{
+    setHeaders(res)
     console.log('resultado dos posts', result)
     res.json(result)
   })
-  .cath(err =>{
+  .catch(err =>{
     console.log('err', err)
     res.json({message: 'erro ao consultar os posts'}).status(500)
   })
