@@ -1,8 +1,8 @@
-
 const httpClient = require('../http-client')
 const client = require('../redis')
 const lodash = require('lodash')
 const registerLog = require('../db/index').save
+const approvalProb = require('../utils/prob')
 
 
 const _setResultToCache = 
@@ -63,15 +63,6 @@ const diff = (cached, apiResult) => {
       .mapValues('count')
       .value()
   }
-
-  const approvalProb = (summary, goal) => {
-    const wieghts = {
-      afavor: 1,
-      concordante: .7,
-      centro: .5,
-      discordante: .2,
-      contra: 0,
-    }}
 
   
   const generateSummary = () =>{
