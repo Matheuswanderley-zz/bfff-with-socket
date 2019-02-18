@@ -76,22 +76,24 @@ const diff = (cached, apiResult) => {
   
   const generateSummary = () =>{
     const goal = 308
-    const congressmen = payload
     const summary = countBy(payload, 'favorabilidade')
     summary.probabilidade = approvalProb(summary, goal)
     summary.necessarios = Math.max(goal - (summary.afavor + summary.concordante), 0)
-    return { summary, congressmen }
+    return { summary }
+    
     
   }
 
   const response = {
-    summary: generateSummary(payload),
-    congressmen: payload
+    data:generateSummary() ,
+    congressmen: payload 
   }
+
 
   console.log('[SERVICE] DIFF count =', diffLog.length)
   return  response
 }
+
 
 const _getDeputadosRedis = () => new Promise((resolve, reject) => {
   return client.get('deputados', (err, result) => {

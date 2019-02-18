@@ -27,11 +27,12 @@ const setHeaders = res => {
 
 
 const httpGetDeputados = res => {
-  setHeaders(res)
+  
   console.log('[GET] /deputados')
 
   service.getDeputados()
     .then(result => {
+      setHeaders(res)
       console.log('[GET] /deputados response 200')
       res
         .status(200)
