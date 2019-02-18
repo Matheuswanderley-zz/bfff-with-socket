@@ -33,8 +33,6 @@ const diff = (cached, apiResult) => {
     const apiObj = mapApi.get(apiResult[i].id)
     apiObj.oldFavorabilidade = null
     apiObj.changed = false
-   // if ( !cachedObj || cachedObj.favorabilidade !== apiObj.favorabilidade) {  
-    //console.log('>>>> MUDOU!! ', cachedObj.favorabilidade, apiObj.favorabilidade)} 
     if ( !cachedObj || cachedObj.favorabilidade !== apiObj.favorabilidade) {      
      apiObj.oldFavorabilidade = cachedObj ? cachedObj.favorabilidade : ''
       apiObj.changed = true
@@ -76,7 +74,6 @@ const diff = (cached, apiResult) => {
     }}
 
   
-  // response
   const generateSummary = () =>{
     const goal = 308
     const congressmen = payload
