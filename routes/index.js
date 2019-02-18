@@ -13,25 +13,6 @@ router.get("/", (req, res) => {
   res.send({ response: res.data }).status(200);
 });
 
-router.get("/deputados", (req, res)=>{
-  setHeaders(res)
-  console.log('[GET] /deputados')
-
-  service.getDeputados()
-    .then(result => {
-      console.log('[GET] /deputados response 200')
-      res
-        .json({
-          source: 'Deputados API', 
-          ...result, 
-        })
-    })
-    .catch(err => {
-      res.status(500).json({ error: err.message })
-    })
-})
-
-
 router.get("/posts/:id", (req, res) =>{
   const id = req.params.id
   httpClient.getPosts(id)
