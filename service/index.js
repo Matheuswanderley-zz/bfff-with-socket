@@ -1,8 +1,7 @@
 const httpClient = require('../http-client')
 const client = require('../redis')
 const lodash = require('lodash')
-const registerLog = require('../db/index').save
-const approvalProb = require('../utils/prob')
+
 
 
 const _setResultToCache = 
@@ -25,64 +24,21 @@ const diff = (cached, apiResult) => {
   }
 
   const payload = []
-  const diffLog = []
+  
 
 
   for (i in apiResult) {  
     const cachedObj = mapCached.get(apiResult[i].id)
     const apiObj = mapApi.get(apiResult[i].id)
-    apiObj.oldFavorabilidade = null
-    apiObj.changed = false
-    if ( !cachedObj || cachedObj.favorabilidade !== apiObj.favorabilidade) {      
-     apiObj.oldFavorabilidade = cachedObj ? cachedObj.favorabilidade : ''
-      apiObj.changed = true
-      diffLog.push({
-        deputado_id: apiObj.id,
-        old_favorabilidade: apiObj.oldFavorabilidade,
-        favorabilidade: apiObj.favorabilidade
-      })
-
-    }
-    payload.push(apiObj)
+      if (cachedObj == null || cachedObj.favorabilidade !== apiObj.favorabilidade) {
+        _setResultToCache(apiResult)
+        payload.push(apiObj)
+     }
+    
   }
-  if (diffLog.length === 0) {
-    return {}
-  }
-  registerLog(diffLog)
-  .catch(err => console.log(err))
-  
   _setResultToCache(payload)
-
-  const countBy = (data, dimension) => {
-    const totalGrouped = lodash.countBy(data, dimension)
-    return lodash.chain(totalGrouped)
-      .map((c, k) => {
-        return { group: k, count: c }
-      })
-      .keyBy('group')
-      .mapValues('count')
-      .value()
-  }
-
   
-  const generateSummary = () =>{
-    const goal = 308
-    const summary = countBy(payload, 'favorabilidade')
-    summary.probabilidade = approvalProb(summary, goal)
-    summary.necessarios = Math.max(goal - (summary.afavor + summary.concordante), 0)
-    return { summary }
-    
-    
-  }
-
-  const response = {
-    data:generateSummary() ,
-    congressmen: payload 
-  }
-
-
-  console.log('[SERVICE] DIFF count =', diffLog.length)
-  return  response
+  return payload
 }
 
 
@@ -97,9 +53,9 @@ const _getDeputadosRedis = () => new Promise((resolve, reject) => {
 })
 
 const getDeputados = () =>   httpClient.getDeputados()
-      .then(result =>       
-        _getDeputadosRedis()        
-        .then(redisResult => diff(redisResult, result)))
+      .then(result => _getDeputadosRedis()    
+        .then(redisResult => diff(redisResult , result)))
+        
 
 module.exports = {
     getDeputados
