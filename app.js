@@ -24,7 +24,6 @@ const service = require('./service')
  
 app.use(routes);
 app.use(responseTime());
-app.use(bodyParser.json());
 app.use(auth.initialize());
 
 

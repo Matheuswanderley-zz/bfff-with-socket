@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const httpClient = require('../http-client');
-var jwt = require("jwt-simple");
-var auth = require("../auth")();
-var users = require("../user");
-var cfg = require("../config/index");
-
+const jwt = require("jwt-simple");
+const auth = require("../auth")();
+const users = require("../user");
+const cfg = require("../config/index");
+const  bodyParser = require("body-parser");
+//router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.json());
 
 const setHeaders = (res) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -41,23 +43,22 @@ router.get('/onload/deputados',auth.authenticate(), (req, res) =>{
     res.json({error: err.message}.status(500))
   })
 })
-router.post('/auth', (req, res) =>{
-  setHeaders(res)
-  if(req.body.email && req.body.password){
+router.post("/auth", (req, res) => {
+  if (req.body.email && req.body.password) {
     let email = req.body.email;
     let password = req.body.password;
-    let user = users.find((u)=>{
-      return u.email === email && user.password === password;
+    let user = users.find(function(u) {
+      return u.email === email && u.password === password;
     });
-    if(user){
+    if (user) {
       let payload = {id: user.id};
       let token = jwt.encode(payload, cfg.jwtSecret);
-      res.json({token: token})
-    }else {
-      res.sendStatus(401)
-    } 
+      res.json({token: token});
+    } else {
+      res.sendStatus(401);
+    }
   } else {
-    res.sendStatus(401)
+    res.sendStatus(401);
   }
 })
 module.exports = router;
