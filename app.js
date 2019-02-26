@@ -11,6 +11,9 @@ const responseTime = require('response-time')
 
 const routes = require("./routes/index");
 
+const  bodyParser = require("body-parser");
+
+const auth = require("./auth.js")();
 
 
 const app = express();
@@ -21,6 +24,9 @@ const service = require('./service')
  
 app.use(routes);
 app.use(responseTime());
+app.use(bodyParser.json());
+app.use(auth.initialize());
+
 
 // socket init
 const wsGetDeputados = socket => {
