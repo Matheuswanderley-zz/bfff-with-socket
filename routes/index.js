@@ -47,7 +47,7 @@ router.post("/auth", (req, res) => {
   if (req.body.email && req.body.password) {
     let email = req.body.email;
     let password = req.body.password;
-    let user = users.find(function(u) {
+    let user = users.filter(function(u) {
       return u.email === email && u.password === password;
     });
     if (user) {
